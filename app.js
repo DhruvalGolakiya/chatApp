@@ -51,9 +51,14 @@ socket.on("connection", socket => {
   socket.on("stopTyping", () => {
     socket.broadcast.emit("notifyStopTyping");
   });
-
-  socket.on("chat message", function(msg) {
+ 
+  socket.on("chat message", function(msg,name) {
+    socket.on("new-user", (name) => {
+      users[socket.id] = name;
+      socket.broadcast.emit("user-connected", name);
+    });
     console.log("message: " + msg);
+    console.log("name" + name);
 
     //broadcast message to everyone in port:5000 except yourself.
     socket.broadcast.emit("received", { message: msg });
@@ -61,7 +66,7 @@ socket.on("connection", socket => {
     //save chat to the database
     connect.then(db => {
       console.log("connected correctly to the server");
-      let chatMessage = new Chat({ message: msg, sender: "Anonymous" });
+      let chatMessage = new Chat({ message: msg, sender: 'any'});
 
       chatMessage.save();
     });

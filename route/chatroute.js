@@ -1,7 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const connectdb = require("./../dbconnect");
-const Chats = require("./../models/Chat");
+const connectdb = require("../dbconnect");
+const Chats = require("../models/Chat");
 
 const router = express.Router();
 
@@ -10,8 +10,8 @@ router.route("/").get((req, res, next) => {
   res.statusCode = 200;
 
   connectdb.then(db => {
-    let data = Chats.find({ message: "Anonymous" });
-    Chats.find({}).then(chat => {
+    let data = Chats.find({});
+    Chats.find({message:'test1'}).then(chat => {
       res.json(chat);
     });
   });

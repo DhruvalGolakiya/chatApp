@@ -9,8 +9,8 @@ body {
 
 .chat_window {
   position: absolute;
-  width: calc(100% - 20px);
-  max-width: 800px;
+  width: calc(100% - 110px);
+  max-width: 1000px;
   height: 500px;
   border-radius: 10px;
   background-color: #fff;
@@ -28,7 +28,7 @@ body {
   padding: 20px 0 15px;
   box-shadow: 0 1px 30px rgba(0, 0, 0, 0.1);
 }
-.top_menu .buttons {
+/* .top_menu .buttons {
   margin: 3px 0 0 20px;
   position: absolute;
 }
@@ -48,7 +48,7 @@ body {
 }
 .top_menu .buttons .button.maximize {
   background-color: #a3d063;
-}
+} */
 .top_menu .title {
   text-align: center;
   color: #bcbdc0;

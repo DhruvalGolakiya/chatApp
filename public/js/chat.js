@@ -1,5 +1,7 @@
 var socket = io();
 var messages = document.getElementById("messages");
+const name = prompt("Enter your name");
+socket.emit("new-user", name);
 
 (function() {
   $("form").submit(function(e) {
@@ -9,7 +11,7 @@ var messages = document.getElementById("messages");
 
     messages.appendChild(li).append($("#message").val());
     let span = document.createElement("span");
-    messages.appendChild(span).append("by " + "Anonymous" + ": " + "just now");
+    messages.appendChild(span).append("by " + `${name}` + ": " + "just now");
 
     $("#message").val("");
 
@@ -21,7 +23,7 @@ var messages = document.getElementById("messages");
     let span = document.createElement("span");
     var messages = document.getElementById("messages");
     messages.appendChild(li).append(data.message);
-    messages.appendChild(span).append("by " + "anonymous" + ": " + "just now");
+    messages.appendChild(span).append("by " + `${name}` + ": " + "just now");
     console.log("Hello bingo!");
   });
 })();
