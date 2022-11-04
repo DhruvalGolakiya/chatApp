@@ -1,43 +1,59 @@
 var socket = io();
 var messages = document.getElementById("messages");
-const Username = prompt("Enter your name");
+var userList = document.getElementById("user-list");
+let Username = prompt("Enter your name");
+const inboxPeople = document.querySelector(".inbox__people");
 
-
-(function() {
-  $("form").submit(function(e) {
-   socket.emit("new-user", Username =>{
-    console.log("UserNAME",Username);
-   });
-
+(function () {
+  $("form").submit(function (e) {
     let li = document.createElement("li");
     e.preventDefault(); // prevents page reloading
-    socket.emit("chat message", $("#message").val());
+    socket.emit("chat message", $("#message").val(), Username);
+    li.style.marginLeft = "80rem";
+
     messages.appendChild(li).append($("#message").val());
     let span = document.createElement("span");
-    messages.appendChild(span).append("by " + `${Username}` + ": " + "just now");
+    span.style.marginLeft = "80rem";
+    messages
+      .appendChild(span)
+      .append("by " + `${Username}` + ": " + "just nowwwwww");
 
     $("#message").val("");
 
     return false;
   });
 
-  socket.on("received", data => {
+  socket.emit("user-connect", Username);
+  socket.on("online-user", (onlineUsers) => {
+    let li = document.createElement("li");
+    li.style.color = "red";
+    userList.appendChild(li).append(onlineUsers);
+  });
+  socket.on("userCount", function (data) {
+    let userCount = document.getElementById("user-count");
+    userCount.innerText = data.userCount - 1;
+  });
+
+  socket.on("received", (data) => {
     let li = document.createElement("li");
     let span = document.createElement("span");
     var messages = document.getElementById("messages");
     messages.appendChild(li).append(data.message);
-    messages.appendChild(span).append("by " + `${Username}` + ": " + "just now");
+    messages
+      .appendChild(span)
+      .append("by " + `${Username}` + ": " + "just now");
   });
 })();
 
-// fetching initial chat messages from the database
-(function() {
+// FROM DATABASE
+
+(function () {
   fetch("/chats")
-    .then(data => {
+    .then((data) => {
       return data.json();
     })
-    .then(json => {
-      json.map(data => {
+    .then((json) => {
+      json.map((data) => {
         let li = document.createElement("li");
         let span = document.createElement("span");
         messages.appendChild(li).append(data.message);
@@ -48,26 +64,26 @@ const Username = prompt("Enter your name");
     });
 })();
 
-//is typing...
+// //is typing...
 
-let messageInput = document.getElementById("message");
-let typing = document.getElementById("typing");
+// let messageInput = document.getElementById("message");
+// let typing = document.getElementById("typing");
 
-//isTyping event
-messageInput.addEventListener("keypress", () => {
-  socket.emit("typing", { user: "Someone", message: "is typing..." });
-});
+// //isTyping event
+// messageInput.addEventListener("keypress", () => {
+//   socket.emit("typing", { user: "Someone", message: "is typing..." });
+// });
 
-socket.on("notifyTyping", data => {
-  typing.innerText = data.user + " " + data.message;
-  console.log(data.user + data.message);
-});
+// socket.on("notifyTyping", data => {
+//   typing.innerText = data.user + " " + data.message;
+//   console.log(data.user + data.message);
+// });
 
-//stop typing
-messageInput.addEventListener("keyup", () => {
-  socket.emit("stopTyping", "");
-});
+// //stop typing
+// messageInput.addEventListener("keyup", () => {
+//   socket.emit("stopTyping", "");
+// });
 
-socket.on("notifyStopTyping", () => {
-  typing.innerText = "";
-});
+// socket.on("notifyStopTyping", () => {
+//   typing.innerText = "";
+// });
