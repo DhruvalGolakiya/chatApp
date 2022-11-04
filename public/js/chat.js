@@ -1,17 +1,20 @@
 var socket = io();
 var messages = document.getElementById("messages");
-const name = prompt("Enter your name");
-socket.emit("new-user", name);
+const Username = prompt("Enter your name");
+
 
 (function() {
   $("form").submit(function(e) {
+   socket.emit("new-user", Username =>{
+    console.log("UserNAME",Username);
+   });
+
     let li = document.createElement("li");
     e.preventDefault(); // prevents page reloading
     socket.emit("chat message", $("#message").val());
-
     messages.appendChild(li).append($("#message").val());
     let span = document.createElement("span");
-    messages.appendChild(span).append("by " + `${name}` + ": " + "just now");
+    messages.appendChild(span).append("by " + `${Username}` + ": " + "just now");
 
     $("#message").val("");
 
@@ -23,8 +26,7 @@ socket.emit("new-user", name);
     let span = document.createElement("span");
     var messages = document.getElementById("messages");
     messages.appendChild(li).append(data.message);
-    messages.appendChild(span).append("by " + `${name}` + ": " + "just now");
-    console.log("Hello bingo!");
+    messages.appendChild(span).append("by " + `${Username}` + ": " + "just now");
   });
 })();
 

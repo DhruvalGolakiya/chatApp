@@ -11,7 +11,7 @@ router.route("/").get((req, res, next) => {
 
   connectdb.then(db => {
     let data = Chats.find({});
-    Chats.find({message:'test1'}).then(chat => {
+    Chats.find({}).then(chat => {
       res.json(chat);
     });
   });
