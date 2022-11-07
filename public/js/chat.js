@@ -1,8 +1,13 @@
 var socket = io();
+var Dhruvalsocket = io("/dhruval");
 var messages = document.getElementById("messages");
 var userList = document.getElementById("user-list");
-let Username = prompt("Enter your name");
+let Username;
 const inboxPeople = document.querySelector(".inbox__people");
+
+while (!Username) {
+  Username = prompt("Enter your name");
+}
 
 (function () {
   $("form").submit(function (e) {
@@ -31,7 +36,7 @@ const inboxPeople = document.querySelector(".inbox__people");
   });
   socket.on("userCount", function (data) {
     let userCount = document.getElementById("user-count");
-    userCount.innerText = data.userCount - 1;
+    userCount.innerText = data.userCount;
   });
 
   socket.on("received", (data) => {
@@ -63,6 +68,34 @@ const inboxPeople = document.querySelector(".inbox__people");
       });
     });
 })();
+
+const chatMessages = document.querySelector(".chat-messages");
+
+const { username, room } = Qs.parse(location.search, {
+  ignoreQueryPrefix: true,
+});
+
+socket.on("message", (message) => {
+  console.log(message);
+  outputMessage(message);
+});
+
+socket.emit("joinRoom", { username });
+
+function outputMessage(message) {
+  const div = document.createElement("div");
+  div.classList.add("message");
+  const p = document.createElement("p");
+  p.classList.add("meta");
+  p.innerText = message.username;
+  p.innerHTML += `<span>${message.time}</span>`;
+  div.appendChild(p);
+  const para = document.createElement("p");
+  para.classList.add("text");
+  para.innerText = message.text;
+  div.appendChild(para);
+  document.querySelector(".chat-messages").appendChild(div);
+}
 
 // //is typing...
 

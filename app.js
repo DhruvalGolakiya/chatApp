@@ -7,42 +7,47 @@ const chatRouter = require("./route/chatroute");
 
 const http = require("http").Server(app);
 
-const io = require("socket.io");
+const socketIO = require("socket.io");
 
 const port = 3001;
 
 //bodyparser middleware
-app.use(bodyParser.json());
 
 //routes
-app.use("/chats", chatRouter);
 //set the express.static middleware
 app.use(express.static(__dirname + "/public"));
-
-socket = io(http);
+app.use("/chats", chatRouter);
+io = socketIO(http);
 const Chat = require("./models/Chat");
 var activeUsers = new Chat();
 const connect = require("./dbconnect");
-const { stringify } = require("querystring");
 let userCount = 0;
 var onlineUsers = {};
 
-socket.on("connection", (socket) => {
+
+io.on("connection", (socket) => {
+  socket.on("joinRoom", ({ username }) => {
+    const user = username;
+    socket.join("newRoom");
+    socket.broadcast
+      .to("newRoom")
+      .emit("message", `${user} has joined the chat`);
+  });
+
+  console.log("hi");
   socket.on("user-connect", (Username) => {
     onlineUsers = Username;
     console.log(Username);
     socket.emit("online-user", onlineUsers);
   });
   userCount++;
-  socket.emit("userCount", { userCount: userCount });
+  io.emit("userCount", { userCount: userCount });
   console.log("user connected");
-  console.log(userCount);
 
   socket.on("disconnect", function () {
     userCount--;
-    socket.emit("userCount", { userCount: userCount });
+    io.emit("userCount", { userCount: userCount });
     console.log("user disconnected");
-    console.log(userCount);
   });
 
   socket.on("chat message", function (message, currentUser) {
